@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
@@ -32,25 +33,42 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        String imagePath = "C:\\Users\\Chimi\\Desktop\\PB SEM VI\\Podstawy Biometrii\\Zadanie1\\image1.jpg";
+        String imagePath = "C:\\Users\\Chimi\\Desktop\\PB SEM VI\\Podstawy Biometrii\\Zadanie1\\image2.jpg";
 
         // Buffor Image
         File file = new File(imagePath);
         InputStream stream = new FileInputStream(imagePath);
         BufferedImage img = ImageIO.read(file);
 
-        BufferedImage binaryImage =  convertToBinarization(img);
+        BufferedImage binaryImage = convertToBinarization(img);
         Image convertedImage = convertToFxImage(binaryImage);
 
-        //InputStream stream = new FileInputStream(imagePath);
-        //Image image = new Image(stream);
-        ImageView imageView = new ImageView();
-        imageView.setImage(convertedImage);
-        imageView.setX(10);
-        imageView.setY(10);
-        imageView.setFitWidth(350);
-        imageView.setFitHeight(350);
-        imageView.setPreserveRatio(true);
+
+        Image orginalImag = new Image(stream);
+
+        ImageView orginalImageView = new ImageView();
+        orginalImageView.setImage(orginalImag);
+        orginalImageView.setX(10);
+        orginalImageView.setY(10);
+        orginalImageView.setFitHeight(300);
+        orginalImageView.setFitWidth(300);
+
+        orginalImageView.setPreserveRatio(true);
+
+
+        ImageView convertedImageView = new ImageView();
+        convertedImageView.setImage(convertedImage);
+        convertedImageView.setX(10);
+        convertedImageView.setY(380);
+        convertedImageView.setFitHeight(300);
+        convertedImageView.setFitWidth(300);
+
+
+        convertedImageView.setPreserveRatio(true);
+
+
+        VBox ImageBox = new VBox();
+        ImageBox.getChildren().addAll(orginalImageView, convertedImageView);
 
         // Histogram display
         // Defining Axis
@@ -85,10 +103,10 @@ public class HelloApplication extends Application {
 
 
         HBox hBox = new HBox();
-        hBox.getChildren().addAll(imageView, histogramChart);
+        hBox.getChildren().addAll(ImageBox, histogramChart);
 
         Group root = new Group(hBox);
-        Scene scene = new Scene(root, 1295, 675);
+        Scene scene = new Scene(root, 1295, 800);
 
         stage.setTitle("Binarization And Histogram");
         stage.setScene(scene);
@@ -106,11 +124,11 @@ public class HelloApplication extends Application {
         // Get the height of the image.
         int height = image.getHeight();
         // Establish a 2D array to keep image data.
-        int[][] result = new int[height][width];
+        int[][] result = new int[width][height];
         // The height of the image.
-        for (int row = 0; row < height; row++) {
+        for (int row = 0; row < width; row++) {
             // The width of the image.
-            for (int col = 0; col < width; col++) {
+            for (int col = 0; col < height; col++) {
                 // Acquire RGB value.
                 result[row][col] = image.getRGB(row, col);
                 // Acqurie integer type of RGB value.
@@ -121,7 +139,6 @@ public class HelloApplication extends Application {
                 int iG = 0;
                 // The bule variable.
                 int iB = 0;
-                int iGray = 0;
                 // The average variable
                 int iAvg = 0;
 

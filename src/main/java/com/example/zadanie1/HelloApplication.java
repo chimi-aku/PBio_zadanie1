@@ -99,7 +99,7 @@ public class HelloApplication extends Application {
             seriesAvg.getData().add(new XYChart.Data(i, histogramAvg[i]));
         }
 
-        histogramChart.getData().addAll(seriesRed, seriesGreen, seriesBlue, seriesAvg);
+        histogramChart.getData().addAll(seriesRed, seriesAvg, seriesGreen, seriesBlue );
 
 
         HBox hBox = new HBox();
@@ -158,7 +158,7 @@ public class HelloApplication extends Application {
                 iAvg = ( iR + iG + iB ) / 3;
                 histogramAvg[iAvg]++;
                 // This is our threshold, you can change it.
-                if ( iG > 120 )
+                if ( iAvg > 120 )
                 {
                     // This is white pixel.
                     iRet = 0xffffff;

@@ -100,8 +100,6 @@ public class HelloApplication extends Application {
 
 
 
-
-
         //Original Image display
         originalImageView.setX(10);
         originalImageView.setY(10);

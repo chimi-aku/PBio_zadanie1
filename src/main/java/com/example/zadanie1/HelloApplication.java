@@ -21,6 +21,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
 import java.io.*;
+import java.util.Arrays;
 
 public class HelloApplication extends Application {
 
@@ -30,65 +31,96 @@ public class HelloApplication extends Application {
     public static int histogramAvg[] = new int[256];
 
     String imagePath = "C:\\Users\\Chimi\\Desktop\\PB SEM VI\\Podstawy Biometrii\\Zadanie1\\image2.jpg";
+    ImageView originalImageView = new ImageView();
+    ImageView convertedImageView = new ImageView();
+    File file = new File(imagePath);
 
+    Image originalImage;
+    Image convertedImage;
 
+    BufferedImage img;
     @Override
     public void start(Stage stage) throws IOException {
 
 
 
-
-
-        File file = new File(imagePath);
-
+        // Loading Image
         Button loadBtn = new Button("Load");
         loadBtn.setMinWidth(100);
         loadBtn.setOnAction(e -> {
                     FileChooser fileChooser = new FileChooser();
                     fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.png"));
 
-                    File selectedFile = fileChooser.showOpenDialog(stage);
+                    file = fileChooser.showOpenDialog(stage);
 
-                    System.out.println(selectedFile);
+                    try {
+                        start(stage);
+                    }
+                    catch (IOException ex){
+                        ex.printStackTrace();
+                    }
+
                 }
         );
 
+        Button saveBtn = new Button("save");
+        saveBtn.setMinWidth(100);
+        saveBtn.setOnAction(e -> {
+           FileChooser fileChooser = new FileChooser();
+           fileChooser.setInitialFileName("out.jpg");
+
+           File outDir = new File(System.getProperty("user.home"));
+           fileChooser.setInitialDirectory(outDir);
+
+           fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JPG", "jpg"));
+
+           File out = fileChooser.showSaveDialog(stage);
+           try {
+               ImageIO.write(img, "jpg", out);
+           }
+           catch (IOException ex) {
+               ex.printStackTrace();
+           }
+
+        });
+
         HBox buttonBox = new HBox();
-        buttonBox.getChildren().addAll(loadBtn);
+        buttonBox.getChildren().addAll(loadBtn, saveBtn);
 
 
-        // Buffor Image
+        // Get Orginal Image and convert
 
         InputStream stream = new FileInputStream(imagePath);
-        BufferedImage img = ImageIO.read(file);
+        img = ImageIO.read(file);
+        originalImage = convertToFxImage(img);
 
         BufferedImage binaryImage = convertToBinarization(img);
-        Image convertedImage = convertToFxImage(binaryImage);
+        convertedImage = convertToFxImage(binaryImage);
 
-
-        Image orginalImage = new Image(stream);
-        ImageView orginalImageView = new ImageView();
-        orginalImageView.setImage(orginalImage);
-        orginalImageView.setX(10);
-        orginalImageView.setY(10);
-        orginalImageView.setFitHeight(300);
-        orginalImageView.setFitWidth(300);
-        orginalImageView.setPreserveRatio(true);
-
-
-        ImageView convertedImageView = new ImageView();
+        originalImageView.setImage(originalImage);
         convertedImageView.setImage(convertedImage);
+
+
+
+
+
+        //Original Image display
+        originalImageView.setX(10);
+        originalImageView.setY(10);
+        originalImageView.setFitHeight(300);
+        originalImageView.setFitWidth(300);
+        originalImageView.setPreserveRatio(true);
+
+        //Converted Image display
         convertedImageView.setX(10);
         convertedImageView.setY(380);
         convertedImageView.setFitHeight(300);
         convertedImageView.setFitWidth(300);
-
-
         convertedImageView.setPreserveRatio(true);
 
-
         VBox ImageBox = new VBox();
-        ImageBox.getChildren().addAll(orginalImageView, convertedImageView);
+        ImageBox.getChildren().addAll(originalImageView, convertedImageView);
+
 
         // Histogram display
         // Defining Axis
@@ -139,6 +171,12 @@ public class HelloApplication extends Application {
 
 
     private static BufferedImage convertToBinarization(BufferedImage image) {
+        // Reset Histogram
+        Arrays.fill(histogramRed, 0);
+        Arrays.fill(histogramGreen, 0);
+        Arrays.fill(histogramBlue, 0);
+        Arrays.fill(histogramAvg, 0);
+
         // Get the width of the image.
         int width = image.getWidth();
         // Get the height of the image.

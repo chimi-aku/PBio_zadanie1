@@ -7,12 +7,14 @@ import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javax.imageio.ImageIO;
@@ -27,16 +29,36 @@ public class HelloApplication extends Application {
     public static int histogramBlue[] = new int[256];
     public static int histogramAvg[] = new int[256];
 
-
+    String imagePath = "C:\\Users\\Chimi\\Desktop\\PB SEM VI\\Podstawy Biometrii\\Zadanie1\\image2.jpg";
 
 
     @Override
     public void start(Stage stage) throws IOException {
 
-        String imagePath = "C:\\Users\\Chimi\\Desktop\\PB SEM VI\\Podstawy Biometrii\\Zadanie1\\image2.jpg";
+
+
+
+
+        File file = new File(imagePath);
+
+        Button loadBtn = new Button("Load");
+        loadBtn.setMinWidth(100);
+        loadBtn.setOnAction(e -> {
+                    FileChooser fileChooser = new FileChooser();
+                    fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.png"));
+
+                    File selectedFile = fileChooser.showOpenDialog(stage);
+
+                    System.out.println(selectedFile);
+                }
+        );
+
+        HBox buttonBox = new HBox();
+        buttonBox.getChildren().addAll(loadBtn);
+
 
         // Buffor Image
-        File file = new File(imagePath);
+
         InputStream stream = new FileInputStream(imagePath);
         BufferedImage img = ImageIO.read(file);
 
@@ -44,15 +66,13 @@ public class HelloApplication extends Application {
         Image convertedImage = convertToFxImage(binaryImage);
 
 
-        Image orginalImag = new Image(stream);
-
+        Image orginalImage = new Image(stream);
         ImageView orginalImageView = new ImageView();
-        orginalImageView.setImage(orginalImag);
+        orginalImageView.setImage(orginalImage);
         orginalImageView.setX(10);
         orginalImageView.setY(10);
         orginalImageView.setFitHeight(300);
         orginalImageView.setFitWidth(300);
-
         orginalImageView.setPreserveRatio(true);
 
 
@@ -103,7 +123,7 @@ public class HelloApplication extends Application {
 
 
         HBox hBox = new HBox();
-        hBox.getChildren().addAll(ImageBox, histogramChart);
+        hBox.getChildren().addAll(ImageBox, histogramChart, buttonBox);
 
         Group root = new Group(hBox);
         Scene scene = new Scene(root, 1295, 800);

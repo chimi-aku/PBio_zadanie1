@@ -30,7 +30,7 @@ public class HelloApplication extends Application {
     public static int histogramBlue[] = new int[256];
     public static int histogramAvg[] = new int[256];
 
-    String imagePath = "C:\\Users\\Chimi\\Desktop\\PB SEM VI\\Podstawy Biometrii\\Zadanie1\\image2.jpg";
+    String imagePath = System.getProperty("user.dir") + "\\img\\default.jpg";
     ImageView originalImageView = new ImageView();
     ImageView convertedImageView = new ImageView();
     File file = new File(imagePath);
@@ -41,8 +41,6 @@ public class HelloApplication extends Application {
     BufferedImage img;
     @Override
     public void start(Stage stage) throws IOException {
-
-
 
         // Loading Image
         Button loadBtn = new Button("Load");
